@@ -1,0 +1,110 @@
+#!/bin/bash
+
+cd `dirname $0`
+source ./colors.lib
+
+MAXVOL=65535
+P=false
+
+function print_help_and_quit() {
+    echo -e "Usage: ${CW}$0 [options] (get)|(set|inc|dec VOLUME)$Cw"
+    echo
+    echo    "Returns or modifies the volume of pulse audio sink 0."
+    echo
+    echo -e "$Cu${CW}Available options:$Cw"
+    echo -e "  ${CW}-p${Cw}        If set, the passed and returned volume is in"
+    echo -e "                      percent having $MAXVOL defined as 100%."
+    echo    "                      Otherwise the volume is absolute."
+    echo -e "                      This effects both ${CW}VOLUME${Cw} as well as the"
+    echo    "                      output of this tool."
+    echo -e "  ${CW}-h,--help${Cw} Prints this help and exits."
+    echo
+
+    if [[ $# == 0 ]]
+    then
+        e=1
+    else
+        e=$1
+    fi
+    exit $e
+}
+
+function get_volume() {
+    str=`amixer sget Master`
+    str=${str#*Left: Playback}
+    str=${str%% [*}
+
+    $P && ((str=$str*100/$MAXVOL))
+    echo $str
+}
+
+function set_volume() {
+    v=$1
+    $P && ((v=$MAXVOL*$1/100+1))
+    pacmd set-sink-volume 0 ${v} > /dev/null
+}
+
+cmd=
+arg=
+while [[ $# -ge 1 ]]
+do
+    case $1 in
+        -h|--help)
+            print_help_and_quit 0
+            ;;
+        -p)
+            P=true
+            shift 1
+            ;;
+        -*)
+            echo -e "${CR}Unknown option ${1}.$Cw\n" && \
+            print_help_and_quit
+            ;;
+        *)
+            if [[ "$cmd" == "" ]]
+            then
+                cmd=$1
+            elif [[ "$arg" != "" || "$cmd" == "get" ]]
+            then
+                print_help_and_quit
+            else
+                arg=$1
+            fi
+            shift 1
+            ;;
+    esac
+done
+
+case $cmd in
+    get)
+        get_volume
+        ;;
+    set)
+        [[ "$arg" == "" ]] && print_help_and_quit
+        [[ $arg == *[!0-9]* ]] && \
+            echo -e "${CR}VOLUME has to be an integer.\n" && \
+            print_help_and_quit
+
+        set_volume $arg
+        get_volume
+        ;;
+    inc|dec)
+        [[ "$arg" == "" ]] && print_help_and_quit
+        [[ $arg == *[!0-9]* ]] && \
+            echo -e "${CR}VOLUME has to be an integer.\n" && \
+            print_help_and_quit
+        v=`get_volume`
+
+        if [[ "$cmd" == "inc" ]]
+        then
+            ((v=$v+$arg))
+        else
+            ((v=$v-$arg))
+        fi
+        set_volume $v
+        get_volume
+        ;;
+    *)
+        print_help_and_quit
+        ;;
+esac
