@@ -13,10 +13,10 @@ function print_help_and_quit() {
     echo
     echo -e "$Cu${CW}Available options:$Cw"
     echo -e "  ${CW}-p${Cw}        If set, the passed and returned volume is in"
-    echo -e "                      percent having $MAXVOL defined as 100%."
-    echo    "                      Otherwise the volume is absolute."
-    echo -e "                      This effects both ${CW}VOLUME${Cw} as well as the"
-    echo    "                      output of this tool."
+    echo -e           "            percent having $MAXVOL defined as 100%."
+    echo              "            Otherwise the volume is absolute."
+    echo -e           "            This effects both ${CW}VOLUME${Cw} as well as the"
+    echo              "            output of this tool."
     echo -e "  ${CW}-h,--help${Cw} Prints this help and exits."
     echo
 
