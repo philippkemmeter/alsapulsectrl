@@ -33,3 +33,8 @@ to be used in other script e.g. for acpi button binding.
 
     # echos current volume in percent
     alsapulsectrl get -p
+
+## Requirements
+
+This tool uses `amixer` and `pacmd`. The first is part of the `alsa-utils`
+package, the latter of `pulseaudio`.
