@@ -5,7 +5,7 @@ to be used in other script e.g. for acpi button binding.
 
 ## Synopsis
 
-    Usage: /usr/local/bin/alsapulsectrl [options] (get)|(set|inc|dec VOLUME)
+    Usage: alsapulsectrl [options] (get)|(set|inc|dec VOLUME)
     
     Returns or modifies the volume of pulse audio sink 0.
     
