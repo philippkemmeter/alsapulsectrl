@@ -38,3 +38,9 @@ to be used in other script e.g. for acpi button binding.
 
 This tool uses `amixer` and `pacmd`. The first is part of the `alsa-utils`
 package, the latter of `pulseaudio`.
+
+## Colors
+
+If you want colored output, then you have to put the file `colors.lib` in the
+same directory as `gov`. So downloading the `colors.lib` is optional, but colors
+are cool!
